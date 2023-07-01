@@ -7,7 +7,7 @@ export default function Header() {
 
   const authButton = () => {
 
-    let className = "inline-flex items-center px-4 py-2 my-2 font-medium text-white transition duration-500 ease-in-out transform rounded-lg text-md md:mt-0 md:ml-4 ";
+    let className = "px-4 py-2 font-medium text-white transition duration-500 ease-in-out transform rounded-lg text-md md:mt-0 md:ml-4 ";
     let href = "/api/auth/";
     let text = "Sign ";
 
@@ -29,22 +29,13 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 w-full clearNav z-50">
-      <div className="max-w-5xl mx-auto flex flex-wrap p-5 flex-col md:flex-row">
-        <div className="flex flex-row items-center justify-between p-3 md:p-1 ">
-          <a href="/" className="flex text-3xl text-gray-900 font-medium mb-4 md:mb-0">Luke's Interactive Whiteboard</a>
-        </div>
-        <div className="flex flex-grow items-center">
-          <div className="w-full ml-auto mr-auto font-4 pt-1 md:pl-14 pl-1 flex flex-wrap items-center text-base text-1xl justify-center justify-items-start">
-            <a className="mr-5 cursor-pointer text-gray-900 hover:text-zinc-600 font-semibold tr04" href="https://luketrimby.com" target="_blank">
-              Portfolio
-            </a>
-
-            {authButton()}
-
-          </div>
-        </div>
+    <nav className="sticky flex-no-wrap flex w-full items-center bg-orange-400 py-1 z-50 opacity-80 hover:opacity-100 transition-opacity duration-150">
+      <div className="flex-no-wrap relative w-1/2 flex justify-start pl-5">
+        Luke's Whiteboard
       </div>
-    </header>
+      <div className="flex-no-wrap relative w-1/2 flex justify-end pr-5">
+        {authButton()}
+      </div>
+    </nav>
   );
 }

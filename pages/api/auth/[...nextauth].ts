@@ -7,6 +7,7 @@ import GoogleProvider from "next-auth/providers/google"
 export const authOptions = {
   // Configure one or more authentication providers
   site: process.env.NEXTAUTH_URL,
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     // AppleProvider({
     //   clientId: process.env.APPLE_ID,
