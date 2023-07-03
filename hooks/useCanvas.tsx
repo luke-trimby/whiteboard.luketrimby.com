@@ -6,38 +6,74 @@ interface CanvasProps {
   className: string;
 }
 
-export default function Canvas(props: CanvasProps) {
+const Canvas = (props: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D>(null);
+  let isDragging: boolean = false;
+  let dragStartPos: { x: number, y: number } = { x: 0, y: 0 };
+  let canvasPos: { x: number, y: number } = { x: 0, y: 0 };
 
-  const drawGrid = (gridSize: number = 100) => {
-    for (let x = 0; x <= canvasRef.current.width; x += gridSize) {
-      for (let y = 0; y <= canvasRef.current.height; y += gridSize) {
-        contextRef.current.rect(x, y, gridSize, gridSize);
+  const drawGrid = (smallGridSize: number, largeGridSize: number) => {
+    if (smallGridSize) {
+      contextRef.current.beginPath();
+      for (let x = 0; x <= canvasRef.current.width; x += smallGridSize) {
+        for (let y = 0; y <= canvasRef.current.height; y += smallGridSize) {
+          contextRef.current.rect(x, y, smallGridSize, smallGridSize);
+        }
       }
+      contextRef.current.lineWidth = 0.3;
+      contextRef.current.stroke();
     }
-    contextRef.current.strokeStyle = "#aaa";
-    contextRef.current.lineWidth = 0.5;
-    contextRef.current.stroke();
+
+    if (largeGridSize) {
+      contextRef.current.beginPath();
+      for (let x = 0; x <= canvasRef.current.width; x += largeGridSize) {
+        for (let y = 0; y <= canvasRef.current.height; y += largeGridSize) {
+          contextRef.current.moveTo(x, y);
+          contextRef.current.rect(x, y, largeGridSize, largeGridSize);
+        }
+      }
+      contextRef.current.lineWidth = 0.4;
+      contextRef.current.stroke();
+    }
   };
 
-  const drawDebugCenterCircle = () => {
-    contextRef.current.beginPath();
-    contextRef.current.fillStyle = 'red';
-    contextRef.current.arc(canvasRef.current.width / 2, canvasRef.current.height / 2, 50, 0, 2 * Math.PI);
-    contextRef.current.fill();
+  const initCanvasContent = () => {
+    drawGrid(64, 1024);
   }
 
-  const initCanvasContent = () => {
-    drawGrid();
-    drawDebugCenterCircle();
-  }
+  const addEventListeners = () => {
+    window.addEventListener('mousedown', (event: MouseEvent) => {
+      if (event.button === 1) {
+        isDragging = true;
+        const canvasRect = canvasRef.current.getBoundingClientRect();
+        dragStartPos = { x: event.clientX - canvasRect.x, y: event.clientY - canvasRect.y };
+        event.preventDefault();
+      }
+    });
+    window.addEventListener('mouseup', (event: MouseEvent) => {
+      if (event.button === 1) {
+        canvasRef.current.style.cursor = "default"
+        isDragging = false;
+        event.preventDefault();
+      }
+    });
+    window.addEventListener('mousemove', (event: MouseEvent) => {
+      if (isDragging) {
+        canvasRef.current.style.cursor = "grabbing";
+        canvasPos = { x: event.clientX - dragStartPos.x, y: event.clientY - dragStartPos.y };
+        canvasRef.current.style.left = `${canvasPos.x}px`;
+        canvasRef.current.style.top = `${canvasPos.y}px`;
+      }
+    });
+  };
 
   useEffect(() => {
     if (canvasRef.current) {
       contextRef.current = canvasRef.current.getContext('2d');
       if (contextRef.current) {
         initCanvasContent();
+        addEventListeners();
       }
     }
   }, []);
@@ -47,3 +83,5 @@ export default function Canvas(props: CanvasProps) {
     context: contextRef
   };
 };
+
+export default Canvas;
