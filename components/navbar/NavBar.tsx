@@ -1,9 +1,18 @@
+import { useContext, useState } from 'react';
+import BaseCanvasTool from '../canvas/tools/BaseCanvasTool';
 import { CircleIconSvg } from '../svg/CircleIconSvg';
 import { PaintBrushIconSvg } from '../svg/PaintBrushIconSvg';
 import { RectangleIconSvg } from '../svg/RectangleIconSvg';
 import NavButton from './NavButton';
+import { LineTool } from '../canvas/tools/LineTool';
+import { RectangleTool } from '../canvas/tools/RectangleTool';
 
 const NavBar = () => {
+
+  const toolClasses: BaseCanvasTool[] = [
+    new LineTool(),
+    new RectangleTool(),
+  ];
 
   const clearButtons = () => {
     const navBtns = document.getElementsByClassName("navBtn");
@@ -17,13 +26,17 @@ const NavBar = () => {
     const button = event.target as HTMLButtonElement;
     const classList = button.classList;
     classList.replace("bg-white", "bg-gray-200");
-    return false;
+
+    const toolIndex = button.getAttribute("data-tool-index");
+    // TODO
+    console.log(`Lukas - toolIndex`, toolIndex);
+    console.log(`Lukas - tool`, toolClasses[toolIndex]);
   };
 
   const svgs = [<PaintBrushIconSvg />, <RectangleIconSvg />, <CircleIconSvg />];
   const buttons = svgs.map((svg, i) => {
     return (
-      <NavButton key={i} onClick={onNavButtonClick} top={i === 0} btm={i === svgs.length - 1}>
+      <NavButton key={i} toolIndex={i} onClick={onNavButtonClick} top={i === 0} btm={i === svgs.length - 1}>
         {svg}
       </NavButton>
     );

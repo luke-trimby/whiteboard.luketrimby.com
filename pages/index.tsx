@@ -1,8 +1,8 @@
 import React from "react";
 import Head from "next/head";
 import Header from "../components/Header";
-import Canvas from "../components/canvas/Canvas";
 import { NextSeo } from "next-seo";
+import Canvas from '../components/canvas/Canvas';
 
 const Home = () => {
   return (
@@ -20,7 +20,7 @@ const Home = () => {
         <link rel="icon" href="/favicon.png" />
       </Head>
       <Header />
-      <Canvas />
+      <Canvas width={4096} height={4096} className={"absolute bg-white"} />
     </div>
   );
 }
