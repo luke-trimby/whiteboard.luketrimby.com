@@ -1,10 +1,10 @@
 import React from "react";
 import Head from "next/head";
 import Header from "../components/Header";
-import Main from "../components/Main";
+import Canvas from "../components/canvas/Canvas";
 import { NextSeo } from "next-seo";
 
-export default function Home() {
+const Home = () => {
   return (
     <div className="text-black">
       <NextSeo
@@ -20,7 +20,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.png" />
       </Head>
       <Header />
-      <Main />
+      <Canvas />
     </div>
   );
 }
+
+export default Home;

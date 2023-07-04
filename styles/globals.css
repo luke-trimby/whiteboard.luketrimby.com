@@ -19,6 +19,10 @@ a {
   text-decoration: none;
 }
 
+svg {
+  pointer-events: none;
+}
+
 * {
   box-sizing: border-box;
 }

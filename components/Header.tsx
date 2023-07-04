@@ -1,24 +1,19 @@
 import { useSession } from 'next-auth/react';
 import React from "react";
 
-export default function Header() {
+const Header = () => {
 
   const { data: session } = useSession();
 
   const authButton = () => {
 
-    let className = "px-4 py-2 font-medium text-white transition duration-500 ease-in-out transform rounded-lg text-md md:mt-0 md:ml-4 ";
-    let href = "/api/auth/";
-    let text = "Sign ";
+    let className = `px-4 py-2 font-medium text-white transition duration-500 ease-in-out transform rounded-lg text-md md:mt-0 md:ml-4 ${session ? "bg-black" : "bg-green-700"}`;
+    let href = "/api/auth/signin";
+    let text = "Sign in";
 
     if (session) {
-      className += "bg-black";
-      href += "signout";
-      text += "out";
-    } else {
-      className += "bg-green-700";
-      href += "signin";
-      text += "in";
+      href = "/api/auth/signout";
+      text = "Sign out";
     }
 
     return (
@@ -39,3 +34,5 @@ export default function Header() {
     </nav>
   );
 }
+
+export default Header;

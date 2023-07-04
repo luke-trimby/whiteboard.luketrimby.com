@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { Point } from '../interfaces/Point';
 
 interface CanvasProps {
   width: string | number;
@@ -6,12 +7,12 @@ interface CanvasProps {
   className: string;
 }
 
-const Canvas = (props: CanvasProps) => {
+const useCanvas = (props: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D>(null);
   let isDragging: boolean = false;
-  let dragStartPos: { x: number, y: number } = { x: 0, y: 0 };
-  let canvasPos: { x: number, y: number } = { x: 0, y: 0 };
+  let dragStartPos: Point;
+  let canvasPos: Point;
 
   const drawGrid = (smallGridSize: number, largeGridSize: number) => {
     if (smallGridSize) {
@@ -21,7 +22,7 @@ const Canvas = (props: CanvasProps) => {
           contextRef.current.rect(x, y, smallGridSize, smallGridSize);
         }
       }
-      contextRef.current.lineWidth = 0.3;
+      contextRef.current.lineWidth = 0.25;
       contextRef.current.stroke();
     }
 
@@ -33,13 +34,19 @@ const Canvas = (props: CanvasProps) => {
           contextRef.current.rect(x, y, largeGridSize, largeGridSize);
         }
       }
-      contextRef.current.lineWidth = 0.4;
+      contextRef.current.lineWidth = 0.5;
       contextRef.current.stroke();
     }
   };
 
   const initCanvasContent = () => {
     drawGrid(64, 1024);
+
+    const canvasHalfPoint = new Point(canvasRef.current.width / 2, canvasRef.current.height / 2);
+    const screenHalfPoint = new Point(window.innerWidth / 2, window.innerHeight / 2);
+
+    canvasRef.current.style.left = `-${canvasHalfPoint.x - screenHalfPoint.x}px`;
+    canvasRef.current.style.top = `-${canvasHalfPoint.y - screenHalfPoint.y}px`;
   }
 
   const addEventListeners = () => {
@@ -47,21 +54,21 @@ const Canvas = (props: CanvasProps) => {
       if (event.button === 1) {
         isDragging = true;
         const canvasRect = canvasRef.current.getBoundingClientRect();
-        dragStartPos = { x: event.clientX - canvasRect.x, y: event.clientY - canvasRect.y };
+        dragStartPos = new Point(event.clientX - canvasRect.x, event.clientY - canvasRect.y);
         event.preventDefault();
       }
     });
     window.addEventListener('mouseup', (event: MouseEvent) => {
       if (event.button === 1) {
-        canvasRef.current.style.cursor = "default"
+        canvasRef.current.style.cursor = 'default';
         isDragging = false;
         event.preventDefault();
       }
     });
     window.addEventListener('mousemove', (event: MouseEvent) => {
       if (isDragging) {
-        canvasRef.current.style.cursor = "grabbing";
-        canvasPos = { x: event.clientX - dragStartPos.x, y: event.clientY - dragStartPos.y };
+        canvasRef.current.style.cursor = 'grabbing';
+        canvasPos = new Point(event.clientX - dragStartPos.x, event.clientY - dragStartPos.y);
         canvasRef.current.style.left = `${canvasPos.x}px`;
         canvasRef.current.style.top = `${canvasPos.y}px`;
       }
@@ -84,4 +91,4 @@ const Canvas = (props: CanvasProps) => {
   };
 };
 
-export default Canvas;
+export default useCanvas;
